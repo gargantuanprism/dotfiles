@@ -1,0 +1,8 @@
+URxvt.font: xft:terminus:size=8
+URxvt.scrollBar: False
+URxvt.saveLines: 10000
+URxvt.cursorBlink: True
+URxvt.internalBorder: 0
+URxvt.externalBorder: 0
+
+

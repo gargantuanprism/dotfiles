@@ -1,0 +1,108 @@
+function ssm_get {
+  aws ssm get-parameter --name "$1" | jq -r .Parameter.Value
+}
+
+function watch_lambda {
+  fn=$1
+  shift
+  saw watch /aws/lambda/$fn "$@"
+  #aws logs tail /aws/lambda/$fn --follow "$@"
+}
+
+function get_lambda {
+  fn=$1
+  shift
+  saw get /aws/lambda/$fn "$@"
+  #aws logs tail /aws/lambda/$fn "$@"
+}
+
+function tu_clone {
+  git clone git@bitbucket.org:tankutility/$1.git
+}
+
+function docker_shell {
+  docker exec -it $1 bash
+}
+
+function docker_tail {
+  while true; do 
+    docker logs -f $1
+    sleep 1
+  done
+}
+
+function docker_run_shell {
+  docker run --rm -it $1 /bin/bash
+}
+
+function docker_run {
+  docker run --rm --name $1 $1
+}
+
+function rsync_watch {
+  while true; do
+    fswatch -o $1 | rsync -avz $1 $2
+  done
+}
+
+fpath=(~/.zsh/completion $fpath)
+
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+autoload -Uz promptinit
+promptinit
+prompt skwp
+
+autoload -U +X bashcompinit && bashcompinit
+autoload -U +X compinit && compinit
+
+alias pbinclip='xclip -o | pastebincl | grep URL | cut -c 6- | xclip'
+alias mount-iso="sudo mount -o loop -t iso9660"
+alias tmux-copy="tmux show-buffer | pbcopy"
+alias tmux-start="tmuxinator start vim"
+alias ve-start='deactivate; source .venv/bin/activate'
+alias ve-create='virtualenv -p "/usr/bin/python3" .venv && source .venv/bin/activate'
+alias pgrep='pgrep -alf'
+alias autossh='autossh -M 12345'
+alias napi="https --session=napi"
+alias napi-local='http --session=napi-local'
+alias brewup='brew upgrade --greedy'
+alias cd=z
+
+PATH="$HOME/bin:$PATH"  
+PATH="/usr/local/heroku/bin:$PATH"
+PATH="$HOME/.local/bin:$PATH"
+PATH="/opt/homebrew/bin:$PATH"
+PATH="/opt/local/bin:$PATH"
+PATH="$GEM_HOME/bin:$PATH"
+PATH="$HOME/go/bin:$PATH"
+
+source $TU_DOCKER_BASE/bin/tudockerctl-completion.bash
+
+ssh-add
+ssh-add $HOME/.ssh/aws.pem
+ssh-add $HOME/.ssh/m1
+ssh-add $HOME/.ssh/rpi
+
+#. ~/bin/set-creds.sh prod
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+nvm use 18
+npm config set @tu:registry $VERDACCIO_REGISTRY
+
+BASE16_SHELL=$HOME/.config/base16-shell/
+[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+eval "$(atuin init zsh)"
+eval "$(zoxide init zsh)"
+
