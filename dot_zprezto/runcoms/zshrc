@@ -6,14 +6,12 @@ function watch_lambda {
   fn=$1
   shift
   saw watch /aws/lambda/$fn "$@"
-  #aws logs tail /aws/lambda/$fn --follow "$@"
 }
 
 function get_lambda {
   fn=$1
   shift
   saw get /aws/lambda/$fn "$@"
-  #aws logs tail /aws/lambda/$fn "$@"
 }
 
 function tu_clone {
@@ -63,7 +61,6 @@ alias mount-iso="sudo mount -o loop -t iso9660"
 alias tmux-copy="tmux show-buffer | pbcopy"
 alias tmux-start="tmuxinator start vim"
 alias ve-start='deactivate; source .venv/bin/activate'
-alias ve-create='virtualenv -p "/usr/bin/python3" .venv && source .venv/bin/activate'
 alias pgrep='pgrep -alf'
 alias autossh='autossh -M 12345'
 alias napi="https --session=napi"
@@ -86,8 +83,6 @@ ssh-add $HOME/.ssh/aws.pem
 ssh-add $HOME/.ssh/m1
 ssh-add $HOME/.ssh/rpi
 
-#. ~/bin/set-creds.sh prod
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -97,7 +92,6 @@ npm config set @tu:registry $VERDACCIO_REGISTRY
 
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
-
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
