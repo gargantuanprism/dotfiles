@@ -1,0 +1,31 @@
+name: vim
+root: ~/
+#pre_window: source $HOME/bin/set-creds.sh prod
+
+windows:
+  - dev:
+      layout: main-vertical
+      panes:
+        - vim
+        - 
+        -
+
+  # - docker:
+  #     layout: tiled
+  #     panes:
+  #       - cd ~/dev/tu-docker/tu-dev
+  #       - bash -c 'tudockerctl logs emu'
+  #       - bash -c 'tudockerctl logs napi'
+  #       - bash -c 'tudockerctl logs kinesalite-lambda'
+  #       -
+  #       -
+  #       -
+  #       -
+  #       -
+
+  - big_terms:
+      layout: even-horizontal
+      panes:
+        - 
+        -
+
