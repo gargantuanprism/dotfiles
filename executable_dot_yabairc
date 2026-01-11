@@ -1,0 +1,73 @@
+#!/bin/bash
+
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+conf='yabai -m config'
+rule='yabai -m rule --add'
+sig='yabai -m signal --add'
+win='yabai -m window'
+spc='yabai -m space'
+pad=5
+
+#$conf debug_output on
+
+$conf layout bsp
+
+$conf top_padding    $pad
+$conf bottom_padding $pad
+$conf left_padding   $pad
+$conf right_padding  $pad
+$conf window_gap     $pad
+$conf window_placement first_child
+# $conf external_bar   all:20:0
+
+# $conf focus_follows_mouse autofocus
+$conf mouse_follows_focus off
+
+$conf window_opacity off
+$conf active_window_opacity 1.0
+$conf normal_window_opacity 0.5
+
+$spc 1 --label main
+$spc 2 --label work
+$spc 3 --label media
+$spc 4 --label reaper
+
+# space rules
+$rule app='Signal' space=main
+$rule app='Messages' space=main
+$rule app='Vivaldi' space=main
+
+$rule app='Google Chrome' space=work
+$rule app='kitty' space=work
+
+$rule app='Spotify' space=media
+
+$rule app='REAPER' space=reaper
+$rule app='Guitar Pro 8' space=reaper
+
+# float rules
+$rule app='Jellyfin Media Player' manage=off
+$rule app="Finder" manage=off
+$rule app="System Settings" manage=off
+$rule app="Moonlight" manage=off
+# $rule app="REAPER" title!="^REAPER v" manage=off
+
+# signals
+# browser left, messages right (doesn't work)
+$sig event=window_created app='Vivaldi' \
+  action='yabai -m window $YABAI_WINDOW_ID --swap first'
+# $sig event=window_created app='Messages' \
+#   action='yabai -m window $YABAI_WINDOW_ID --warp east'
+# $sig event=window_created app='REAPER' title!="REAPER v" \
+#   action='yabai -m window $YABAI_WINDOW_ID --toggle float'
+
+# work setup
+$sig event=window_created app='Google Chrome' \
+  action='yabai -m window $YABAI_WINDOW_ID --warp east'
+$sig event=window_created app='kitty' \
+  action='yabai -m window $YABAI_WINDOW_ID --warp west'
+
+borders active_color=0xffe23db1 inactive_color=0xff494d64 width=5.0 &
+
