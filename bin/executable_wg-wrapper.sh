@@ -1,7 +1,19 @@
 #!/bin/bash
 
+conf_dir="$HOME/.wireguard"
+link_name="./wg0.conf"
+notify_title="WireGuard"
+
 notify() {
-  osascript -e "display notification \"$1\" with title \"WireGuard\""
+  local msg="$1"
+  local subtitle="$2"
+  local script="display notification \"$msg\" with title \"$notify_title\""
+
+  if [ -n "$subtitle" ]; then
+    script="$script subtitle \"$subtitle\""
+  fi
+
+  osascript -e "$script"
 }
 
 wg-up() {
@@ -17,7 +29,9 @@ wg-up() {
 
   ln -sf $1.conf $link_name
   sudo wg-quick up $link_name
-  notify "Tunnel up: $1"
+
+  local interface=$(wg-check)
+  notify "Tunnel up: $1" "$interface"
 }
 
 wg-down() {
@@ -26,24 +40,28 @@ wg-down() {
     return
   fi
 
+  local interface=$(wg-check)
   sudo wg-quick down $link_name
   rm -f $link_name
-  notify "Tunnel down"
+  notify "Tunnel down" "$interface"
 }
 
 wg-restart() {
   echo "restart"
+
+  if [ ! -f "$link_name" ]; then
+    echo "symlink not found, probably down"
+    exit 1
+  fi
+
   sudo wg-quick down $link_name
   sudo wg-quick up $link_name
   notify "Tunnel restarted"
 }
 
 wg-check() {
-  sudo wg show | rg -q interface
+  sudo wg show | rg interface
 }
-
-conf_dir="$HOME/.wireguard"
-link_name="./wg0.conf"
 
 action=$1
 conf_name=$2
